@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import crypto from 'crypto';
 import { createServer } from 'http';
@@ -86,15 +87,16 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 
 const clients = new Set();
 
-wss.on('connection', (ws) => {
+wss.on('connection', async (ws) => {
     clients.add(ws);
     console.log(`[WS] Client connected (${clients.size} total)`);
 
-    // Send current count on connect
-    ws.send(JSON.stringify({
-        type: 'init',
-        count: getRegistrationCount(),
-    }));
+    try {
+        const count = await getRegistrationCount();
+        ws.send(JSON.stringify({ type: 'init', count }));
+    } catch (err) {
+        console.error('[WS] Error sending init:', err);
+    }
 
     ws.on('close', () => {
         clients.delete(ws);
@@ -114,10 +116,10 @@ function broadcast(data) {
 // ─── API Routes ─────────────────────────────────────────────
 
 // GET all registrations (admin only)
-app.get('/api/waitlist', requireAuth, (req, res) => {
+app.get('/api/waitlist', requireAuth, async (req, res) => {
     try {
-        const registrations = getAllRegistrations();
-        const count = getRegistrationCount();
+        const registrations = await getAllRegistrations();
+        const count = await getRegistrationCount();
         res.json({ registrations, count });
     } catch (err) {
         console.error('[API] Error fetching registrations:', err);
@@ -126,7 +128,7 @@ app.get('/api/waitlist', requireAuth, (req, res) => {
 });
 
 // POST new registration
-app.post('/api/waitlist', (req, res) => {
+app.post('/api/waitlist', async (req, res) => {
     try {
         const { email } = req.body;
 
@@ -134,24 +136,23 @@ app.post('/api/waitlist', (req, res) => {
             return res.status(400).json({ error: 'Email is required' });
         }
 
-        // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email.trim())) {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        if (emailExists(email.trim())) {
+        if (await emailExists(email.trim())) {
             return res.status(409).json({ error: 'Email already registered' });
         }
 
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
-        const registration = addRegistration(email.trim().toLowerCase(), ip);
+        const registration = await addRegistration(email.trim().toLowerCase(), ip);
 
-        // Broadcast to all WebSocket clients
+        const count = await getRegistrationCount();
         broadcast({
             type: 'new_registration',
             registration,
-            count: getRegistrationCount(),
+            count,
         });
 
         console.log(`[API] New registration: ${email}`);
@@ -163,19 +164,20 @@ app.post('/api/waitlist', (req, res) => {
 });
 
 // DELETE a registration (admin only)
-app.delete('/api/waitlist/:id', requireAuth, (req, res) => {
+app.delete('/api/waitlist/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        const result = deleteRegistration(Number(id));
+        const result = await deleteRegistration(Number(id));
 
         if (result.changes === 0) {
             return res.status(404).json({ error: 'Registration not found' });
         }
 
+        const count = await getRegistrationCount();
         broadcast({
             type: 'delete_registration',
             id: Number(id),
-            count: getRegistrationCount(),
+            count,
         });
 
         console.log(`[API] Deleted registration #${id}`);
@@ -188,7 +190,7 @@ app.delete('/api/waitlist/:id', requireAuth, (req, res) => {
 
 // ─── Start Server ───────────────────────────────────────────
 server.listen(PORT, () => {
-    console.log(`\n  ✦  NailArt Waitlist Server`);
+    console.log(`\n  ✦  NailArt Waitlist Server (Supabase)`);
     console.log(`  ➜  API:       http://localhost:${PORT}/api/waitlist`);
     console.log(`  ➜  WebSocket: ws://localhost:${PORT}/ws\n`);
 });

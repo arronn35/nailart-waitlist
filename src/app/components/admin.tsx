@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Trash2, Users, Clock, Wifi, WifiOff, ArrowLeft, Lock, LogOut, Eye, EyeOff } from "lucide-react";
+import { Trash2, Users, Clock, Wifi, WifiOff, Lock, LogOut, Eye, EyeOff, X } from "lucide-react";
+import {
+    Dialog,
+    DialogPortal,
+    DialogOverlay,
+} from "./ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 interface Registration {
     id: number;
@@ -58,110 +64,90 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
     };
 
     return (
-        <div className="min-h-screen bg-renaissance-burgundy flex items-center justify-center">
-            {/* Background pattern */}
-            <div
-                className="fixed inset-0 opacity-[0.04] pointer-events-none"
-                style={{
-                    backgroundImage: `radial-gradient(circle at 1px 1px, #C9A84C 0.5px, transparent 0.5px)`,
-                    backgroundSize: "32px 32px",
-                }}
-            />
-
-            <div className="relative w-full max-w-sm mx-6">
-                {/* Brand */}
-                <div className="text-center mb-8">
-                    <div className="w-14 h-14 mx-auto mb-4 rounded-full border border-renaissance-gold/40 flex items-center justify-center">
-                        <span
-                            className="text-renaissance-gold"
-                            style={{ fontFamily: "var(--font-display)", fontSize: "20px", fontWeight: 700 }}
-                        >
-                            N
-                        </span>
-                    </div>
-                    <h1
-                        className="text-renaissance-ivory mb-2"
-                        style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 600 }}
+        <div className="flex flex-col items-center justify-center py-12 px-6">
+            {/* Brand */}
+            <div className="text-center mb-8">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-full border border-renaissance-gold/40 flex items-center justify-center">
+                    <span
+                        className="text-renaissance-gold"
+                        style={{ fontFamily: "var(--font-display)", fontSize: "20px", fontWeight: 700 }}
                     >
-                        Admin Access
-                    </h1>
-                    <p
-                        className="text-renaissance-champagne/40"
-                        style={{ fontFamily: "var(--font-accent)", fontSize: "0.85rem" }}
-                    >
-                        Enter your password to view registrations
-                    </p>
+                        N
+                    </span>
                 </div>
-
-                {/* Login Form */}
-                <form onSubmit={handleSubmit}>
-                    <div className="border border-renaissance-gold/20 bg-renaissance-burgundy/80 backdrop-blur-sm p-6">
-                        <div className="relative mb-4">
-                            <label htmlFor="admin-password" className="sr-only">
-                                Admin Password
-                            </label>
-                            <div className="relative">
-                                <Lock
-                                    size={14}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-renaissance-gold/40"
-                                />
-                                <input
-                                    id="admin-password"
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Password"
-                                    autoFocus
-                                    className="w-full pl-10 pr-10 py-3.5 bg-white/5 border border-renaissance-gold/15 text-renaissance-ivory placeholder:text-renaissance-champagne/25 focus:outline-none focus:border-renaissance-gold/40 focus:ring-1 focus:ring-renaissance-gold/20 transition-all duration-300"
-                                    style={{
-                                        fontFamily: "var(--font-accent)",
-                                        fontSize: "0.9rem",
-                                    }}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-renaissance-champagne/30 hover:text-renaissance-gold/60 transition-colors"
-                                >
-                                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {error && (
-                            <div
-                                className="mb-4 px-3 py-2 border border-red-400/20 bg-red-400/5 text-red-300"
-                                style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem" }}
-                            >
-                                {error}
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={loading || !password.trim()}
-                            className="w-full py-3.5 bg-renaissance-gold/10 border border-renaissance-gold/30 text-renaissance-gold hover:bg-renaissance-gold/20 hover:border-renaissance-gold/50 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-                            style={{
-                                fontFamily: "var(--font-accent)",
-                                fontSize: "13px",
-                                fontWeight: 500,
-                                letterSpacing: "0.15em",
-                            }}
-                        >
-                            <span className="uppercase">{loading ? "Verifying..." : "Enter"}</span>
-                        </button>
-                    </div>
-                </form>
-
-                <a
-                    href="/"
-                    className="flex items-center justify-center gap-2 mt-6 text-renaissance-champagne/30 hover:text-renaissance-gold/60 transition-colors"
-                    style={{ fontFamily: "var(--font-accent)", fontSize: "0.8rem" }}
+                <h2
+                    className="text-renaissance-ivory mb-2"
+                    style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 600 }}
                 >
-                    <ArrowLeft size={12} />
-                    <span>Back to site</span>
-                </a>
+                    Admin Access
+                </h2>
+                <p
+                    className="text-renaissance-champagne/40"
+                    style={{ fontFamily: "var(--font-accent)", fontSize: "0.85rem" }}
+                >
+                    Enter your password to view registrations
+                </p>
             </div>
+
+            {/* Login Form */}
+            <form onSubmit={handleSubmit} className="w-full max-w-sm">
+                <div className="border border-renaissance-gold/20 bg-renaissance-burgundy/80 backdrop-blur-sm p-6">
+                    <div className="relative mb-4">
+                        <label htmlFor="admin-password" className="sr-only">
+                            Admin Password
+                        </label>
+                        <div className="relative">
+                            <Lock
+                                size={14}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-renaissance-gold/40"
+                            />
+                            <input
+                                id="admin-password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                autoFocus
+                                className="w-full pl-10 pr-10 py-3.5 bg-white/5 border border-renaissance-gold/15 text-renaissance-ivory placeholder:text-renaissance-champagne/25 focus:outline-none focus:border-renaissance-gold/40 focus:ring-1 focus:ring-renaissance-gold/20 transition-all duration-300"
+                                style={{
+                                    fontFamily: "var(--font-accent)",
+                                    fontSize: "0.9rem",
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-renaissance-champagne/30 hover:text-renaissance-gold/60 transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                            </button>
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div
+                            className="mb-4 px-3 py-2 border border-red-400/20 bg-red-400/5 text-red-300"
+                            style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem" }}
+                        >
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        disabled={loading || !password.trim()}
+                        className="w-full py-3.5 bg-renaissance-gold/10 border border-renaissance-gold/30 text-renaissance-gold hover:bg-renaissance-gold/20 hover:border-renaissance-gold/50 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                        style={{
+                            fontFamily: "var(--font-accent)",
+                            fontSize: "13px",
+                            fontWeight: 500,
+                            letterSpacing: "0.15em",
+                        }}
+                    >
+                        <span className="uppercase">{loading ? "Verifying..." : "Enter"}</span>
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }
@@ -236,7 +222,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             .then((r) => {
                 if (r.status === 401) {
                     clearToken();
-                    window.location.reload();
+                    onLogout();
                     throw new Error("Unauthorized");
                 }
                 return r.json();
@@ -253,7 +239,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             wsRef.current?.close();
             clearTimeout(reconnectRef.current);
         };
-    }, [connectWebSocket]);
+    }, [connectWebSocket, onLogout]);
 
     const handleDelete = async (id: number) => {
         try {
@@ -263,7 +249,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             });
             if (res.status === 401) {
                 clearToken();
-                window.location.reload();
+                onLogout();
             }
         } catch (err) {
             console.error("Delete error:", err);
@@ -271,7 +257,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     };
 
     const formatDate = (dateStr: string) => {
-        const d = new Date(dateStr + "Z");
+        const d = new Date(dateStr.endsWith("Z") ? dateStr : dateStr + "Z");
         return d.toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -282,80 +268,57 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     };
 
     return (
-        <div className="min-h-screen bg-renaissance-burgundy">
-            {/* Background pattern */}
-            <div
-                className="fixed inset-0 opacity-[0.04] pointer-events-none"
-                style={{
-                    backgroundImage: `radial-gradient(circle at 1px 1px, #C9A84C 0.5px, transparent 0.5px)`,
-                    backgroundSize: "32px 32px",
-                }}
-            />
-
+        <div className="flex flex-col h-full max-h-[85vh] overflow-hidden">
             {/* Header */}
-            <header className="sticky top-0 z-40 bg-renaissance-burgundy/95 backdrop-blur-md border-b border-renaissance-gold/20">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <a
-                            href="/"
-                            className="flex items-center gap-2 text-renaissance-champagne/50 hover:text-renaissance-gold transition-colors duration-300"
-                            style={{ fontFamily: "var(--font-accent)", fontSize: "0.85rem" }}
+            <div className="flex-shrink-0 border-b border-renaissance-gold/20 px-6 py-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full border border-renaissance-gold/50 flex items-center justify-center">
+                        <span
+                            className="text-renaissance-gold tracking-wider"
+                            style={{ fontFamily: "var(--font-display)", fontSize: "13px", fontWeight: 600 }}
                         >
-                            <ArrowLeft size={14} />
-                            <span>Back to Site</span>
-                        </a>
-                        <div className="w-px h-5 bg-renaissance-gold/20" />
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full border border-renaissance-gold/50 flex items-center justify-center">
-                                <span
-                                    className="text-renaissance-gold tracking-wider"
-                                    style={{ fontFamily: "var(--font-display)", fontSize: "13px", fontWeight: 600 }}
-                                >
-                                    N
-                                </span>
-                            </div>
-                            <span
-                                className="tracking-[0.2em] text-renaissance-ivory uppercase"
-                                style={{ fontFamily: "var(--font-display)", fontSize: "13px", fontWeight: 500 }}
-                            >
-                                Admin
+                            N
+                        </span>
+                    </div>
+                    <span
+                        className="tracking-[0.2em] text-renaissance-ivory uppercase"
+                        style={{ fontFamily: "var(--font-display)", fontSize: "13px", fontWeight: 500 }}
+                    >
+                        Admin
+                    </span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    {connected ? (
+                        <div className="flex items-center gap-1.5 text-emerald-400">
+                            <Wifi size={13} />
+                            <span style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem" }}>Live</span>
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
                             </span>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="flex items-center gap-1.5 text-red-400">
+                            <WifiOff size={13} />
+                            <span style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem" }}>Offline</span>
+                        </div>
+                    )}
 
-                    <div className="flex items-center gap-4">
-                        {/* Connection status */}
-                        {connected ? (
-                            <div className="flex items-center gap-1.5 text-emerald-400">
-                                <Wifi size={13} />
-                                <span style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem" }}>Live</span>
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                                </span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1.5 text-red-400">
-                                <WifiOff size={13} />
-                                <span style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem" }}>Offline</span>
-                            </div>
-                        )}
-
-                        {/* Logout */}
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-1.5 text-renaissance-champagne/30 hover:text-red-400 transition-colors duration-300"
-                            style={{ fontFamily: "var(--font-accent)", fontSize: "0.8rem" }}
-                            title="Logout"
-                        >
-                            <LogOut size={14} />
-                            <span className="hidden sm:inline">Logout</span>
-                        </button>
-                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-1.5 text-renaissance-champagne/30 hover:text-red-400 transition-colors duration-300"
+                        style={{ fontFamily: "var(--font-accent)", fontSize: "0.8rem" }}
+                        title="Logout"
+                    >
+                        <LogOut size={14} />
+                        <span className="hidden sm:inline">Logout</span>
+                    </button>
                 </div>
-            </header>
+            </div>
 
-            <div className="relative max-w-6xl mx-auto px-6 py-8">
+            {/* Scrollable body */}
+            <div className="flex-1 overflow-y-auto px-6 py-6">
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     <div className="border border-renaissance-gold/20 bg-renaissance-burgundy/50 backdrop-blur-sm p-5">
@@ -453,7 +416,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
                 {/* Table */}
                 <div className="border border-renaissance-gold/15 overflow-hidden">
-                    {/* Table header row */}
                     <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-5 py-3 bg-renaissance-gold/5 border-b border-renaissance-gold/15">
                         <span
                             className="text-renaissance-gold/60 tracking-[0.2em] uppercase"
@@ -476,7 +438,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                         <span className="w-8" />
                     </div>
 
-                    {/* Rows */}
                     {registrations.length === 0 ? (
                         <div className="px-5 py-16 text-center">
                             <span
@@ -487,7 +448,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                             </span>
                         </div>
                     ) : (
-                        <div className="max-h-[60vh] overflow-y-auto">
+                        <div className="max-h-[40vh] overflow-y-auto">
                             {registrations.map((reg) => (
                                 <div
                                     key={reg.id}
@@ -531,17 +492,23 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     );
 }
 
-// ─── Main Export ─────────────────────────────────────────────
-export function AdminDashboard() {
+// ─── Admin Modal Export ──────────────────────────────────────
+interface AdminModalProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
+
+export function AdminModal({ open, onOpenChange }: AdminModalProps) {
     const [authenticated, setAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
+        if (!open) return;
+
         const token = getToken();
         if (!token) {
             setAuthenticated(false);
             return;
         }
-        // Verify saved token
         fetch("/api/auth/verify", {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
@@ -549,25 +516,62 @@ export function AdminDashboard() {
             .then((r) => r.json())
             .then((data) => setAuthenticated(data.valid))
             .catch(() => setAuthenticated(false));
-    }, []);
+    }, [open]);
 
-    // Loading state while verifying
-    if (authenticated === null) {
-        return (
-            <div className="min-h-screen bg-renaissance-burgundy flex items-center justify-center">
-                <div
-                    className="text-renaissance-champagne/30"
-                    style={{ fontFamily: "var(--font-accent)", fontSize: "0.9rem" }}
+    const handleClose = () => {
+        onOpenChange(false);
+    };
+
+    const handleLogout = () => {
+        setAuthenticated(false);
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogPortal>
+                <DialogOverlay className="bg-black/70 backdrop-blur-sm" />
+                <DialogPrimitive.Content
+                    className="fixed top-[50%] left-[50%] z-50 translate-x-[-50%] translate-y-[-50%] w-[95vw] max-w-5xl max-h-[90vh] bg-renaissance-burgundy border border-renaissance-gold/20 shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-200 overflow-hidden"
                 >
-                    Verifying access...
-                </div>
-            </div>
-        );
-    }
+                    {/* Background pattern */}
+                    <div
+                        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+                        style={{
+                            backgroundImage: `radial-gradient(circle at 1px 1px, #C9A84C 0.5px, transparent 0.5px)`,
+                            backgroundSize: "32px 32px",
+                        }}
+                    />
 
-    if (!authenticated) {
-        return <LoginScreen onLogin={() => setAuthenticated(true)} />;
-    }
+                    {/* Close button */}
+                    <DialogPrimitive.Close className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center text-renaissance-champagne/30 hover:text-renaissance-ivory transition-colors">
+                        <X size={18} />
+                        <span className="sr-only">Close</span>
+                    </DialogPrimitive.Close>
 
-    return <Dashboard onLogout={() => setAuthenticated(false)} />;
+                    {/* Content */}
+                    <div className="relative">
+                        {authenticated === null && open ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div
+                                    className="text-renaissance-champagne/30"
+                                    style={{ fontFamily: "var(--font-accent)", fontSize: "0.9rem" }}
+                                >
+                                    Verifying access...
+                                </div>
+                            </div>
+                        ) : !authenticated ? (
+                            <LoginScreen onLogin={() => setAuthenticated(true)} />
+                        ) : (
+                            <Dashboard onLogout={handleLogout} />
+                        )}
+                    </div>
+
+                    <DialogPrimitive.Title className="sr-only">Admin Panel</DialogPrimitive.Title>
+                    <DialogPrimitive.Description className="sr-only">
+                        Manage waitlist registrations
+                    </DialogPrimitive.Description>
+                </DialogPrimitive.Content>
+            </DialogPortal>
+        </Dialog>
+    );
 }

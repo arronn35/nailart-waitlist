@@ -1,13 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-export function Navbar() {
+interface NavbarProps {
+  onAdminTrigger?: () => void;
+}
+
+export function Navbar({ onAdminTrigger }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const clickTimestamps = useRef<number[]>([]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogoClick = () => {
+    const now = Date.now();
+    clickTimestamps.current = clickTimestamps.current.filter(
+      (t) => now - t < 800
+    );
+    clickTimestamps.current.push(now);
+
+    if (clickTimestamps.current.length >= 3) {
+      clickTimestamps.current = [];
+      onAdminTrigger?.();
+    }
+  };
 
   return (
     <nav
@@ -20,14 +38,19 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full border border-renaissance-gold/50 flex items-center justify-center bg-renaissance-burgundy">
+          <button
+            type="button"
+            onClick={handleLogoClick}
+            className="w-8 h-8 rounded-full border border-renaissance-gold/50 flex items-center justify-center bg-renaissance-burgundy cursor-default"
+            aria-label="NailArt"
+          >
             <span
-              className="text-renaissance-gold tracking-wider"
+              className="text-renaissance-gold tracking-wider select-none"
               style={{ fontFamily: "var(--font-display)", fontSize: "14px", fontWeight: 600 }}
             >
               N
             </span>
-          </div>
+          </button>
           <span
             className="tracking-[0.2em] text-renaissance-burgundy uppercase"
             style={{ fontFamily: "var(--font-display)", fontSize: "14px", fontWeight: 500 }}

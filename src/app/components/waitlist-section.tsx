@@ -195,6 +195,19 @@ export function WaitlistSection() {
                   </button>
                 </div>
 
+                {error && (
+                  <p
+                    className="mt-3 text-red-600/80"
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "0.8rem",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {error}
+                  </p>
+                )}
+
                 <p
                   className="mt-4 text-renaissance-umber/40"
                   style={{
