@@ -17,16 +17,11 @@ npm run dev:full
 
 - Landing page: http://localhost:5173
 - Admin panel: http://localhost:5173/admin
-- Default password: `nailart2026`
+
 
 ## Configuration
 
 Set environment variables before starting:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `ADMIN_PASSWORD` | `nailart2026` | Admin login password |
-| `PORT` | `3001` | API server port |
 
 ## Scripts
 
