@@ -216,7 +216,7 @@ export function WaitlistSection() {
                     lineHeight: 1.5,
                   }}
                 >
-                  By joining, you agree to be notified when NailArt launches.
+                  By joining, you agree to be notified when Nailora launches.
                   No spam — only art.
                 </p>
               </motion.form>
@@ -257,7 +257,7 @@ export function WaitlistSection() {
                     }}
                   >
                     Welcome to the atelier, patron. You'll be among the first to
-                    experience NailArt when we unveil our creation. Watch your
+                    experience Nailora when we unveil our creation. Watch your
                     inbox for a gilded invitation.
                   </p>
                 </div>

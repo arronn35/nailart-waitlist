@@ -31,8 +31,8 @@ export function Navbar({ onAdminTrigger }: NavbarProps) {
     <nav
       aria-label="Main navigation"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? "bg-renaissance-ivory/90 backdrop-blur-md shadow-[0_1px_0_rgba(201,168,76,0.2)]"
-          : "bg-transparent"
+        ? "bg-renaissance-ivory/90 backdrop-blur-md shadow-[0_1px_0_rgba(201,168,76,0.2)]"
+        : "bg-transparent"
         }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
@@ -42,7 +42,7 @@ export function Navbar({ onAdminTrigger }: NavbarProps) {
             type="button"
             onClick={handleLogoClick}
             className="w-8 h-8 rounded-full border border-renaissance-gold/50 flex items-center justify-center bg-renaissance-burgundy cursor-default"
-            aria-label="NailArt"
+            aria-label="Nailora"
           >
             <span
               className="text-renaissance-gold tracking-wider select-none"
@@ -55,7 +55,7 @@ export function Navbar({ onAdminTrigger }: NavbarProps) {
             className="tracking-[0.2em] text-renaissance-burgundy uppercase"
             style={{ fontFamily: "var(--font-display)", fontSize: "14px", fontWeight: 500 }}
           >
-            NailArt
+            Nailora
           </span>
         </div>
 

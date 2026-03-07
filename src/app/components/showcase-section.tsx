@@ -4,22 +4,19 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 const showcaseItems = [
   {
-    image:
-      "https://images.unsplash.com/photo-1727468939344-44929b044076?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpc3RpYyUyMG5haWwlMjBwb2xpc2glMjBtYW5pY3VyZSUyMGRhcmt8ZW58MXx8fHwxNzcxNDU0NzY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/showcase_1.png",
     title: "Chiaroscuro",
     subtitle: "Light & Shadow Collection",
     description: "Inspired by Caravaggio's mastery of dramatic contrast",
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1571290274554-6a2eaa771e5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjcmVhdGl2ZSUyMG1vZGVybiUyMG5haWwlMjBhcnQlMjBjb2xvcmZ1bHxlbnwxfHx8fDE3NzE0NTQ3Njh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/showcase_2.png",
     title: "Sfumato",
     subtitle: "The Soft Edge Series",
     description: "Da Vinci's blending technique, reimagined for the modern hand",
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1720086196723-a1e0656a90a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbGFtb3JvdXMlMjBuYWlsJTIwc2Fsb24lMjBsdXh1cnklMjBtaW5pbWFsfGVufDF8fHx8MTc3MTQ1NDc2OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/showcase_3.png",
     title: "Doratura",
     subtitle: "The Gilded Touch",
     description: "Gold leaf artistry meets contemporary nail architecture",

@@ -2,8 +2,7 @@ import { motion } from "motion/react";
 import { OrnamentalDivider } from "./ornament";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-const heroImage =
-  "https://images.unsplash.com/photo-1672815554809-37e355eddd24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBtYW5pY3VyZSUyMG5haWxzJTIwYmVhdXR5JTIwY2xvc2V1cHxlbnwxfHx8fDE3NzE0NTQ3NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+const heroImage = "/hero_nail.png";
 
 const accentImage =
   "https://images.unsplash.com/photo-1770210257340-dc2b0f44642a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwZ29sZCUyMG5haWwlMjBkZXNpZ24lMjBoYW5kfGVufDF8fHx8MTc3MTQ1NDc2N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
@@ -100,7 +99,7 @@ export function HeroSection() {
                 fontWeight: 400,
               }}
             >
-              NailArt reimagines nail design through the lens of the old masters —
+              Nailora reimagines nail design through the lens of the old masters —
               classical composition, divine proportion, and an unwavering
               commitment to beauty. Coming soon.
             </motion.p>

@@ -1,8 +1,11 @@
 # Dependencies
 node_modules/
-
-# Build output
+.DS_Store
 dist/
+dist-ssr
+*.local
+.npm
+.data
 
 # Database
 server/*.db

@@ -1,77 +1,71 @@
-import { createClient } from '@supabase/supabase-js';
+import Database from 'better-sqlite3';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-if (!supabaseUrl || !supabaseKey) {
-    console.error('\n  ✗  Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment.');
-    console.error('     Copy .env.example to .env and fill in your Supabase credentials.\n');
-    process.exit(1);
+// Ensure .data directory exists
+const dataDir = path.join(__dirname, '..', '.data');
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const dbPath = path.join(dataDir, 'waitlist.db');
+const db = new Database(dbPath);
+
+// Initialize database schema
+db.exec(`
+    CREATE TABLE IF NOT EXISTS registrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        ip TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`);
 
 export async function addRegistration(email, ip = null) {
-    const { data, error } = await supabase
-        .from('registrations')
-        .insert({ email, ip })
-        .select()
-        .single();
+    try {
+        const insert = db.prepare('INSERT INTO registrations (email, ip) VALUES (?, ?)');
+        const result = insert.run(email, ip);
 
-    if (error) throw error;
-    return data;
+        // Return the newly inserted row
+        return getRegistrationById(result.lastInsertRowid);
+    } catch (error) {
+        if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+            throw new Error('Email already registered');
+        }
+        throw error;
+    }
 }
 
 export async function getRegistrationById(id) {
-    const { data, error } = await supabase
-        .from('registrations')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-    if (error) throw error;
-    return data;
+    const stmt = db.prepare('SELECT * FROM registrations WHERE id = ?');
+    return stmt.get(id);
 }
 
 export async function getAllRegistrations() {
-    const { data, error } = await supabase
-        .from('registrations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data;
+    const stmt = db.prepare('SELECT * FROM registrations ORDER BY created_at DESC');
+    return stmt.all();
 }
 
 export async function getRegistrationCount() {
-    const { count, error } = await supabase
-        .from('registrations')
-        .select('*', { count: 'exact', head: true });
-
-    if (error) throw error;
-    return count;
+    const stmt = db.prepare('SELECT COUNT(*) as count FROM registrations');
+    const result = stmt.get();
+    return result.count;
 }
 
 export async function deleteRegistration(id) {
-    const { data, error } = await supabase
-        .from('registrations')
-        .delete()
-        .eq('id', id)
-        .select();
-
-    if (error) throw error;
-    return { changes: data.length };
+    const stmt = db.prepare('DELETE FROM registrations WHERE id = ?');
+    const result = stmt.run(id);
+    return { changes: result.changes };
 }
 
 export async function emailExists(email) {
-    const { data, error } = await supabase
-        .from('registrations')
-        .select('id')
-        .eq('email', email)
-        .maybeSingle();
-
-    if (error) throw error;
-    return !!data;
+    const stmt = db.prepare('SELECT 1 FROM registrations WHERE email = ?');
+    const result = stmt.get(email);
+    return !!result;
 }
 
-export default supabase;
+export default db;

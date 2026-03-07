@@ -145,7 +145,7 @@ export function PhilosophySection() {
                 lineHeight: 1.7,
               }}
             >
-              NailArt is not merely an application — it is a manifesto. We believe
+              Nailora is not merely an application — it is a manifesto. We believe
               every hand tells a story, and every nail is a canvas awaiting its
               masterpiece.
             </motion.p>

@@ -8,9 +8,9 @@ const exploreLinks = [
 ];
 
 const connectLinks = [
-  { label: "Instagram", handle: "@nailart.studio", href: "https://instagram.com" },
-  { label: "Pinterest", handle: "@nailart", href: "https://pinterest.com" },
-  { label: "Email", handle: "hello@maitrico.com", href: "mailto:hello@maitrico.com" },
+  { label: "Instagram", handle: "@nailorabymaitri", href: "https://instagram.com/nailorabymaitri" },
+  { label: "Pinterest", handle: "@girlhoodxx", href: "https://tr.pinterest.com/girlhoodxx/" },
+  { label: "Email", handle: "maitritechco@gmail.com", href: "mailto:maitritechco@gmail.com" },
 ];
 
 export function Footer() {
@@ -46,7 +46,7 @@ export function Footer() {
                 className="tracking-[0.2em] text-renaissance-ivory uppercase"
                 style={{ fontFamily: "var(--font-display)", fontSize: "14px", fontWeight: 500 }}
               >
-                NailArt
+                Nailora
               </span>
             </div>
             <p
